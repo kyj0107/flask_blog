@@ -103,9 +103,23 @@ def edit(id):
 # route to delete a post
 @app.route('/<int:id>/delete/', methods=('POST',))
 def delete(id):
-    
-    
-    return 
+    #get the post
+    post = get_post(id)
 
+    #connect to the database
+    conn = get_db_connection()
+
+    #run a delete query
+    conn.execute('DELETE FROM posts WHERE id = ?', (id,))
+
+    #commit changes and close connection to the db
+    conn.commit()
+    conn.close()
+
+    #show a success message
+    flash('"{}" was successfully deleted.'.format(post['title']))
+
+    #redirect to the index page
+    return redirect(url_for('index'))
 
 app.run(host="0.0.0.0", port=5001)
